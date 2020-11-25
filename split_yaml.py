@@ -36,12 +36,11 @@ def map_name(name, name_mapping):
   return mapped_name
 
 meta = []
-def get_new_files(template_file, name_mapping_file):
+def get_new_files(template_file, name_mapping_file, new_files):
   with open(template_file, "r") as file:
       templates = yaml.load(file)
   with open(name_mapping_file, "r") as file:
       name_mapping = yaml.load(file)
-  new_files = {}
   for t in templates:
     if 'name' not in t:
       if 'meta' in t:
@@ -78,11 +77,13 @@ name_2_dir_file = name_2_dir_files[0]
 output_folder = "output/element"
 if IS_OFFSCREEN:
   output_folder = "output/offscreen"
+all_files = {}
 for template in test_yaml_files:
-  new_files = get_new_files(template, name_2_dir_file)
-  for file in new_files:
+  get_new_files(template, name_2_dir_file, all_files)
+for file in all_files:
+  print(file, template)
     with open("{d}/{f}.yaml".format(d=output_folder, f=file), "w") as outfile:
-      yaml.dump(new_files[file], outfile)
+    yaml.dump(all_files[file], outfile)
 with open("{}/meta.yaml".format(output_folder), "w") as outfile:
   yaml.dump(meta, outfile)
 
